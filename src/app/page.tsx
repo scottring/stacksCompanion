@@ -1,10 +1,9 @@
-import { FormBuilder } from '@/components/FormBuilder/FormBuilder';
-import { Container } from '@mantine/core';
+import { FormBuilder } from '../components/FormBuilder/FormBuilder';
 
 export default function Home() {
   return (
-    <Container size="md" py="xl">
+    <main className="container mx-auto py-8 px-4">
       <FormBuilder />
-    </Container>
+    </main>
   );
 }

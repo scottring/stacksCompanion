@@ -1,8 +1,10 @@
 import { create } from 'zustand';
+import { FormQuestion } from '../types/form';
 
 interface SurveyState {
   isVisible: boolean;
   currentSurveyId: string | null;
+  questions: FormQuestion[];
   responses: Record<string, string>;
   setVisible: (visible: boolean) => void;
   setResponse: (questionId: string, response: string) => void;
@@ -12,6 +14,7 @@ interface SurveyState {
 export const useSurveyStore = create<SurveyState>((set, get) => ({
   isVisible: false,
   currentSurveyId: null,
+  questions: [],
   responses: {},
 
   setVisible: (visible) => set({ isVisible: visible }),

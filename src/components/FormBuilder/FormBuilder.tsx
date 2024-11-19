@@ -1,13 +1,11 @@
 'use client';
 
 import React from 'react';
-import { Stack, TextInput, Textarea, Button, Group, Paper, Container } from '@mantine/core';
 import { useFormBuilderStore } from '../../store/formBuilderStore';
 import { QuestionCard } from './QuestionCard';
 import { SignatureSection } from '../SignatureSection';
 import { DndContext, closestCenter, DragEndEvent } from '@dnd-kit/core';
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
-import { IconPlus, IconReload } from '@tabler/icons-react';
 
 export const FormBuilder: React.FC = () => {
   const { currentForm, setTitle, setDescription, addQuestion, reorderQuestions, resetToDefault } = useFormBuilderStore();
@@ -22,79 +20,82 @@ export const FormBuilder: React.FC = () => {
   };
 
   return (
-    <Container size="md">
-      <Stack gap="lg">
-        <Paper shadow="xs" p="md" withBorder>
-          <Stack gap="md">
-            <Group position="apart">
-              <TextInput
-                label="Form Title"
-                value={currentForm.title}
-                onChange={(e) => setTitle(e.target.value)}
-                size="lg"
-                style={{ flex: 1 }}
-              />
-              <Button
-                leftSection={<IconReload size={18} />}
+    <div className="container mx-auto max-w-2xl p-4">
+      <div className="space-y-6">
+        <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+          <div className="space-y-4">
+            <div className="flex justify-between items-start">
+              <div className="flex-1">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Form Title
+                </label>
+                <input
+                  type="text"
+                  value={currentForm.title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+              <button
                 onClick={resetToDefault}
-                variant="light"
-                color="gray"
-                mt={24}
+                className="ml-4 mt-6 px-4 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-500"
               >
                 Reset Form
-              </Button>
-            </Group>
-            <Textarea
-              label="Description"
-              value={currentForm.description}
-              onChange={(e) => setDescription(e.target.value)}
-            />
-          </Stack>
-        </Paper>
+              </button>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Description
+              </label>
+              <textarea
+                value={currentForm.description}
+                onChange={(e) => setDescription(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                rows={3}
+              />
+            </div>
+          </div>
+        </div>
 
         <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
           <SortableContext items={currentForm.questions.map(q => q.id)} strategy={verticalListSortingStrategy}>
-            <Stack gap="md">
+            <div className="space-y-4">
               {currentForm.questions.map((question) => (
                 <QuestionCard key={question.id} question={question} />
               ))}
-            </Stack>
+            </div>
           </SortableContext>
         </DndContext>
 
-        <Group justify="center" gap="sm">
-          <Button
-            leftSection={<IconPlus size={18} />}
+        <div className="flex justify-center gap-2 flex-wrap">
+          <button
             onClick={() => addQuestion('multiple_choice')}
-            variant="light"
+            className="px-4 py-2 bg-blue-50 text-blue-600 rounded-md hover:bg-blue-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
-            Multiple Choice
-          </Button>
-          <Button
-            leftSection={<IconPlus size={18} />}
+            + Multiple Choice
+          </button>
+          <button
             onClick={() => addQuestion('multiselect')}
-            variant="light"
+            className="px-4 py-2 bg-blue-50 text-blue-600 rounded-md hover:bg-blue-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
-            Checkbox (Multi-select)
-          </Button>
-          <Button
-            leftSection={<IconPlus size={18} />}
+            + Checkbox (Multi-select)
+          </button>
+          <button
             onClick={() => addQuestion('text')}
-            variant="light"
+            className="px-4 py-2 bg-blue-50 text-blue-600 rounded-md hover:bg-blue-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
-            Text
-          </Button>
-          <Button
-            leftSection={<IconPlus size={18} />}
+            + Text
+          </button>
+          <button
             onClick={() => addQuestion('rating')}
-            variant="light"
+            className="px-4 py-2 bg-blue-50 text-blue-600 rounded-md hover:bg-blue-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
-            Rating
-          </Button>
-        </Group>
+            + Rating
+          </button>
+        </div>
 
         <SignatureSection />
-      </Stack>
-    </Container>
+      </div>
+    </div>
   );
 };

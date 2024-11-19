@@ -1,6 +1,6 @@
 import React from 'react';
-import { Card, Text, Radio, Button, Stack, Group, Checkbox } from '@mantine/core';
 import { useSurveyStore } from '../store/surveyStore';
+import { FormQuestion } from '../types/form';
 
 export const Survey: React.FC = () => {
   const { isVisible, questions, responses, setResponse, submitSurvey } = useSurveyStore();
@@ -16,53 +16,60 @@ export const Survey: React.FC = () => {
   };
 
   return (
-    <Card shadow="sm" p="lg" radius="md" withBorder>
-      <Stack>
-        <Text size="xl" weight={500}>Quick Survey</Text>
-        {questions.map((question, index) => (
-          <div key={index}>
-            <Text weight={500} mb="xs">{question.text}</Text>
+    <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+      <div className="space-y-6">
+        <h2 className="text-xl font-medium">Quick Survey</h2>
+        {questions.map((question: FormQuestion, index: number) => (
+          <div key={index} className="space-y-2">
+            <p className="font-medium">{question.text}</p>
             {question.type === 'multiple_choice' && (
-              <Radio.Group
-                value={responses[question.id] || ''}
-                onChange={(value) => setResponse(question.id, value)}
-              >
-                <Group>
-                  {question.options?.map((option, optIndex) => (
-                    <Radio 
-                      key={optIndex} 
-                      value={option} 
-                      label={option}
+              <div className="flex flex-col gap-2">
+                {question.options?.map((option: string, optIndex: number) => (
+                  <label key={optIndex} className="flex items-center gap-2">
+                    <input
+                      type="radio"
+                      name={`question-${question.id}`}
+                      value={option}
+                      checked={responses[question.id] === option}
+                      onChange={(e) => setResponse(question.id, e.target.value)}
+                      className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300"
                     />
-                  ))}
-                </Group>
-              </Radio.Group>
+                    <span className="text-gray-700">{option}</span>
+                  </label>
+                ))}
+              </div>
             )}
             {question.type === 'multiselect' && question.options && (
-              <Stack>
-                {question.options.map((option, optIndex) => {
+              <div className="flex flex-col gap-2">
+                {question.options.map((option: string, optIndex: number) => {
                   const currentResponses = responses[question.id] 
                     ? JSON.parse(responses[question.id]) 
                     : [];
                   return (
-                    <Checkbox
-                      key={optIndex}
-                      label={option}
-                      checked={currentResponses.includes(option)}
-                      onChange={(event) => 
-                        handleMultiselectChange(question.id, option, event.currentTarget.checked)
-                      }
-                    />
+                    <label key={optIndex} className="flex items-center gap-2">
+                      <input
+                        type="checkbox"
+                        checked={currentResponses.includes(option)}
+                        onChange={(e) => 
+                          handleMultiselectChange(question.id, option, e.target.checked)
+                        }
+                        className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                      />
+                      <span className="text-gray-700">{option}</span>
+                    </label>
                   );
                 })}
-              </Stack>
+              </div>
             )}
           </div>
         ))}
-        <Button onClick={submitSurvey} fullWidth mt="md">
+        <button
+          onClick={submitSurvey}
+          className="w-full px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        >
           Submit Survey
-        </Button>
-      </Stack>
-    </Card>
+        </button>
+      </div>
+    </div>
   );
-}
+};

@@ -1,6 +1,4 @@
-import '@mantine/core/styles.css';
-import { MantineProvider, ColorSchemeScript } from '@mantine/core';
-import { theme } from '@/lib/theme';
+import '../styles.css';
 
 export const metadata = {
   title: 'Form Builder',
@@ -14,13 +12,8 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <head>
-        <ColorSchemeScript />
-      </head>
-      <body>
-        <MantineProvider theme={theme} defaultColorScheme="light">
-          {children}
-        </MantineProvider>
+      <body className="bg-gray-50 min-h-screen">
+        {children}
       </body>
     </html>
   );
