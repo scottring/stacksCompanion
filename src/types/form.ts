@@ -18,6 +18,10 @@ export interface FormQuestion {
   required: boolean;
 }
 
+export interface FormResponse {
+  [questionId: string]: string;
+}
+
 export interface Form {
   id: string;
   title: string;
@@ -28,4 +32,7 @@ export interface Form {
   productId?: string;
   createdAt: string;
   updatedAt: string;
+  responses?: {
+    [timestamp: string]: FormResponse;
+  };
 }

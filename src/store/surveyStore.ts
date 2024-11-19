@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { FormQuestion } from '../types/form';
+import { database } from '../services/database';
 
 interface SurveyState {
   isVisible: boolean;
@@ -8,6 +9,7 @@ interface SurveyState {
   responses: Record<string, string>;
   setVisible: (visible: boolean) => void;
   setResponse: (questionId: string, response: string) => void;
+  loadSurvey: (formId: string) => void;
   submitSurvey: () => Promise<void>;
 }
 
@@ -23,6 +25,18 @@ export const useSurveyStore = create<SurveyState>((set, get) => ({
     set((state) => ({
       responses: { ...state.responses, [questionId]: response }
     })),
+
+  loadSurvey: (formId) => {
+    const form = database.getForm(formId);
+    if (form) {
+      set({
+        isVisible: true,
+        currentSurveyId: form.id,
+        questions: form.questions,
+        responses: {}
+      });
+    }
+  },
 
   submitSurvey: async () => {
     const state = get();
