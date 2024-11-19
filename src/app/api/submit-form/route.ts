@@ -1,15 +1,10 @@
 import { NextResponse } from 'next/server';
-import nodemailer from 'nodemailer';
+import sgMail from '@sendgrid/mail';
 
-const transporter = nodemailer.createTransport({
-  host: process.env.SMTP_HOST,
-  port: parseInt(process.env.SMTP_PORT || '587'),
-  secure: process.env.SMTP_SECURE === 'true',
-  auth: {
-    user: process.env.SMTP_USER,
-    pass: process.env.SMTP_PASS
-  }
-});
+// Initialize SendGrid with API key
+if (process.env.SENDGRID_API_KEY) {
+  sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+}
 
 export async function POST(request: Request) {
   try {
@@ -17,9 +12,9 @@ export async function POST(request: Request) {
 
     // Send notification emails
     for (const signature of signatures) {
-      await transporter.sendMail({
-        from: process.env.SMTP_FROM,
+      const msg = {
         to: signature.email,
+        from: process.env.SENDGRID_FROM_EMAIL || '', // verified sender email
         subject: `Action Required: Product Release Form for ${productName}`,
         html: `
           <h2>Product Release Form Requires Your Attention</h2>
@@ -29,7 +24,9 @@ export async function POST(request: Request) {
             Review Form
           </a>
         `
-      });
+      };
+
+      await sgMail.send(msg);
     }
 
     return NextResponse.json({ 
