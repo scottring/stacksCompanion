@@ -11,7 +11,9 @@ sgMail.setApiKey(process.env.SENDGRID_API_KEY!);
 export async function POST(request: Request) {
   try {
     const body = await request.json();
+    console.log('body', body)
     const { productName, productId, recipients, status } = body;
+
 
     // Verify this is coming from Bubble.io with an "Approved" status
     if (status !== 'Approved') {
@@ -45,6 +47,7 @@ export async function POST(request: Request) {
         signed: false
       }))
     };
+    console.log('newForm creatd')
 
     // Store the form in our database
     const savedForm = database.createForm(newForm);
@@ -53,30 +56,33 @@ export async function POST(request: Request) {
     const formUrl = `${process.env.NEXT_PUBLIC_URL}/form/${savedForm.id}`;
 
     // Send emails to all recipients
-    const emailPromises = recipients.map(async (recipient: string) => {
-      const msg = {
-        to: recipient,
-        from: process.env.SENDGRID_FROM_EMAIL!,
-        subject: `Survey Request for ${productName}`,
-        html: `
-          <h2>Please Complete the Product Release Survey</h2>
-          <p>A product release survey has been created for ${productName}.</p>
-          <p>Please click the link below to complete the survey:</p>
-          <a href="${formUrl}">${formUrl}</a>
-        `,
-      };
+    // const emailPromises = recipients.map(async (recipient: string) => {
+    //   const msg = {
+    //     to: recipient,
+    //     from: process.env.SENDGRID_FROM_EMAIL!,
+    //     subject: `Survey Request for ${productName}`,
+    //     html: `
+    //       <h2>Please Complete the Product Release Survey</h2>
+    //       <p>A product release survey has been created for ${productName}.</p>
+    //       <p>Please click the link below to complete the survey:</p>
+    //       <a href="${formUrl}">${formUrl}</a>
+    //     `,
+    //   };
 
-      return sgMail.send(msg);
-    });
+    //   return await sgMail.send(msg);
+    // });
 
-    await Promise.all(emailPromises);
+    // await Promise.all(emailPromises);
 
-    return NextResponse.json({ 
+    const responsePayload = { 
       success: true, 
       message: 'Form created and emails sent successfully',
       formId: savedForm.id,
       formUrl 
-    });
+    }
+    console.log('responsePayload', responsePayload)
+
+    return NextResponse.json(responsePayload);
 
   } catch (error) {
     console.error('Error processing request:', error);
