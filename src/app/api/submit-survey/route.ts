@@ -12,7 +12,7 @@ export async function POST(request: Request) {
       );
     }
 
-    const form = database.getForm(surveyId);
+    const form = await database.getForm(surveyId);
     if (!form) {
       return NextResponse.json(
         { error: 'Form not found' },
@@ -21,7 +21,7 @@ export async function POST(request: Request) {
     }
 
     // Update form with responses
-    const updatedForm = database.updateForm(surveyId, {
+    const updatedForm = await database.updateForm(surveyId, {
       responses: {
         ...(form.responses || {}),
         [new Date().toISOString()]: responses

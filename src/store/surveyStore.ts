@@ -9,7 +9,7 @@ interface SurveyState {
   responses: Record<string, string>;
   setVisible: (visible: boolean) => void;
   setResponse: (questionId: string, response: string) => void;
-  loadSurvey: (formId: string) => void;
+  loadSurvey: (formId: string) => Promise<void>;
   submitSurvey: () => Promise<void>;
 }
 
@@ -26,15 +26,19 @@ export const useSurveyStore = create<SurveyState>((set, get) => ({
       responses: { ...state.responses, [questionId]: response }
     })),
 
-  loadSurvey: (formId) => {
-    const form = database.getForm(formId);
-    if (form) {
-      set({
-        isVisible: true,
-        currentSurveyId: form.id,
-        questions: form.questions,
-        responses: {}
-      });
+  loadSurvey: async (formId) => {
+    try {
+      const form = await database.getForm(formId);
+      if (form) {
+        set({
+          isVisible: true,
+          currentSurveyId: form.id,
+          questions: form.questions,
+          responses: {}
+        });
+      }
+    } catch (error) {
+      console.error('Failed to load survey:', error);
     }
   },
 

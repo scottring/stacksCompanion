@@ -14,7 +14,6 @@ export async function POST(request: Request) {
     console.log('body', body)
     const { productName, productId, recipients, status } = body;
 
-
     // Verify this is coming from Bubble.io with an "Approved" status
     if (status !== 'Approved') {
       return NextResponse.json(
@@ -47,13 +46,13 @@ export async function POST(request: Request) {
         signed: false
       }))
     };
-    console.log('newForm creatd')
+    console.log('newForm created')
 
     // Store the form in our database
-    const savedForm = database.createForm(newForm);
+    const savedForm = await database.createForm(newForm);
 
     // Create form URL
-    const formUrl = `${process.env.NEXT_PUBLIC_URL}/form/${savedForm.id}`;
+    const formUrl = `${process.env.NEXT_PUBLIC_URL}/form/${newForm.id}`;
 
     // Send emails to all recipients
     // const emailPromises = recipients.map(async (recipient: string) => {
@@ -77,7 +76,7 @@ export async function POST(request: Request) {
     const responsePayload = { 
       success: true, 
       message: 'Form created and emails sent successfully',
-      formId: savedForm.id,
+      formId: newForm.id,
       formUrl 
     }
     console.log('responsePayload', responsePayload)

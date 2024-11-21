@@ -12,14 +12,19 @@ export default function FormPage({ params }: { params: { id: string } }) {
   const loadSurvey = useSurveyStore(state => state.loadSurvey);
 
   useEffect(() => {
-    const loadForm = () => {
-      const formData = database.getForm(params.id);
-      if (!formData) {
-        setError('Form not found');
-        return;
+    const loadForm = async () => {
+      try {
+        const formData = await database.getForm(params.id);
+        if (!formData) {
+          setError('Form not found');
+          return;
+        }
+        setForm(formData);
+        loadSurvey(formData.id);
+      } catch (err) {
+        setError('Error loading form');
+        console.error('Error loading form:', err);
       }
-      setForm(formData);
-      loadSurvey(formData.id);
     };
 
     loadForm();
