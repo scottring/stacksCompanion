@@ -2,7 +2,7 @@ import { collection, doc, getDoc, getDocs, setDoc, updateDoc, deleteDoc } from '
 import { db } from '../lib/firebase';
 import { Form } from '../types/form';
 
-const FORMS_COLLECTION = 'forms';
+export const FORMS_COLLECTION = 'forms';
 
 export const database = {
   createForm: async (form: Form) => {
