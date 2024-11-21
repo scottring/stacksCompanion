@@ -1,9 +1,11 @@
 import { NextResponse } from 'next/server';
 import { database } from '../../../services/database';
 
+export const revalidate = 0
+
 export async function GET() {
+  console.log('GET /api/forms');
   try {
-    console.log('GET /api/forms');
     const forms = await database.getForms();
 
     const responsePayload = {
