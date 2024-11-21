@@ -13,6 +13,10 @@ export const database = {
     return forms.get(id);
   },
 
+  getForms: () => {
+    return Array.from(forms.values());
+  },
+
   updateForm: (id: string, updates: Partial<Form>) => {
     const form = forms.get(id);
     if (!form) return null;

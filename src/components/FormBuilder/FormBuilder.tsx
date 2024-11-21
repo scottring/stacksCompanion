@@ -8,6 +8,13 @@ import { DndContext, closestCenter, DragEndEvent } from '@dnd-kit/core';
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
 
 export const FormBuilder: React.FC = () => {
+  // const [forms, setForms] = React.useState([]);
+  // React.useEffect(() => {
+  //   async function fetchForms() {
+  //     const response = await fetch('/api/get-forms');
+  //     const data = await response.json();
+  //     setForms(data);
+  //   }
   const { currentForm, setTitle, setDescription, addQuestion, reorderQuestions, resetToDefault } = useFormBuilderStore();
 
   const handleDragEnd = (event: DragEndEvent) => {
